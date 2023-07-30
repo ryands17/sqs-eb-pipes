@@ -1,0 +1,21 @@
+{
+  "name": "@sqs-eb-pipes/functions",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "sst bind vitest",
+    "typecheck": "tsc -noEmit"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.119",
+    "@types/node": "^20.4.5",
+    "@types/uuid": "^9.0.2",
+    "sst": "^2.22.6",
+    "vitest": "^0.33.0"
+  },
+  "dependencies": {
+    "@aws-sdk/client-sqs": "^3.379.1",
+    "node-fetch": "^3.3.2",
+    "uuid": "^9.0.0"
+  }
+}
