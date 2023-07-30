@@ -1,15 +1,13 @@
 import fetch from 'node-fetch';
+import { userSchema, userEventSchema } from '@sqs-eb-pipes/core/schemas';
 
-type Message = {
-  messageId: string;
-  body: { userId: number; text: string };
-};
-export const handler = async (event: Message[]) => {
+export const handler = async (_event: unknown) => {
+  const event = userEventSchema.parse(_event);
+
   const raw = await fetch(
     `https://jsonplaceholder.typicode.com/users/${event[0].body.userId}`,
   );
 
-  // TODO: change to validation with Zod
-  const user: any = await raw.json();
+  const user = userSchema.parse(await raw.json());
   return { id: user.id, name: user.name, messageId: event[0].messageId };
 };

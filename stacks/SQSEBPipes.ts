@@ -39,12 +39,12 @@ export function SQSEBPipes({ stack }: sst.StackContext) {
 
   getHandler.bind([mainQueue]);
 
-  const fetchUser = new sfnTasks.LambdaInvoke(stack, 'processMessages', {
+  const fetchUser = new sfnTasks.LambdaInvoke(stack, 'fetchUserTask', {
     lambdaFunction: new LambdaBuilder(stack, 'fetchUser').build(),
     payloadResponseOnly: true,
   });
 
-  const fetchUserPosts = new sfnTasks.LambdaInvoke(stack, 'processMessages2', {
+  const fetchUserPosts = new sfnTasks.LambdaInvoke(stack, 'fetchPostsTask', {
     lambdaFunction: new LambdaBuilder(stack, 'fetchUserPosts').build(),
     payloadResponseOnly: true,
   });

@@ -48,6 +48,9 @@ importers:
       '@aws-sdk/client-sqs':
         specifier: ^3.379.1
         version: 3.379.1
+      '@sqs-eb-pipes/core':
+        specifier: workspace:*
+        version: link:../core
       node-fetch:
         specifier: ^3.3.2
         version: 3.3.2
