@@ -4,10 +4,10 @@ import * as sfnTasks from 'aws-cdk-lib/aws-stepfunctions-tasks';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import { CfnPipe } from 'aws-cdk-lib/aws-pipes';
 import { Duration } from 'aws-cdk-lib';
-import { setRemovalPolicy, LambdaBuilder } from './constructs';
+import { LambdaBuilder } from './constructs';
 
 export function SQSEBPipes({ stack }: sst.StackContext) {
-  const getHandler = new LambdaBuilder(stack, 'lambda').build();
+  const getHandler = new LambdaBuilder(stack, 'sendSQSMessages').build();
 
   const api = new sst.Api(stack, 'api', {
     routes: {
@@ -19,7 +19,6 @@ export function SQSEBPipes({ stack }: sst.StackContext) {
     cdk: {
       queue: {
         visibilityTimeout: Duration.seconds(120),
-        removalPolicy: setRemovalPolicy(stack.stage),
       },
     },
   });
@@ -32,7 +31,6 @@ export function SQSEBPipes({ stack }: sst.StackContext) {
           queue: deadLetterQueue.cdk.queue,
           maxReceiveCount: 3,
         },
-        removalPolicy: setRemovalPolicy(stack.stage),
       },
     },
   });
@@ -40,19 +38,24 @@ export function SQSEBPipes({ stack }: sst.StackContext) {
   getHandler.bind([mainQueue]);
 
   const fetchUser = new sfnTasks.LambdaInvoke(stack, 'fetchUserTask', {
-    lambdaFunction: new LambdaBuilder(stack, 'fetchUser').build(),
+    lambdaFunction: new LambdaBuilder(stack, 'fetchUser')
+      .setMemory('1024 MB')
+      .setExecutionTime('20 seconds')
+      .build(),
     payloadResponseOnly: true,
   });
 
   const fetchUserPosts = new sfnTasks.LambdaInvoke(stack, 'fetchPostsTask', {
-    lambdaFunction: new LambdaBuilder(stack, 'fetchUserPosts').build(),
+    lambdaFunction: new LambdaBuilder(stack, 'fetchUserPosts')
+      .setMemory('1024 MB')
+      .setExecutionTime('20 seconds')
+      .build(),
     payloadResponseOnly: true,
   });
 
   const stateMachineDefinition = fetchUser.next(fetchUserPosts);
 
   const usersAndPostsStateMachine = new sfn.StateMachine(stack, 'fetchUsers', {
-    removalPolicy: setRemovalPolicy(stack.stage),
     definition: stateMachineDefinition,
   });
 

@@ -9,8 +9,12 @@ export default {
     };
   },
   stacks(app) {
+    app.setDefaultRemovalPolicy(app.stage === 'prod' ? 'retain' : 'destroy');
+
     app.setDefaultFunctionProps({
       runtime: 'nodejs16.x',
+      timeout: '1 minute',
+      memorySize: '512 MB',
       architecture: 'arm_64',
     });
 
