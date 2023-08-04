@@ -9,6 +9,7 @@
     "deploy": "sst deploy",
     "destroy": "sst remove",
     "console": "sst console",
+    "prettify": "prettier --write .",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {

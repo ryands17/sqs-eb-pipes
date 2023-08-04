@@ -16,6 +16,8 @@ export default {
       timeout: '1 minute',
       memorySize: '512 MB',
       architecture: 'arm_64',
+      environment: { NODE_OPTIONS: '--enable-source-maps' },
+      nodejs: { esbuild: { sourcemap: true } },
     });
 
     app.stack(SQSEBPipes);
