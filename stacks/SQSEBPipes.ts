@@ -15,7 +15,7 @@ export function SQSEBPipes({ stack }: sst.StackContext) {
     },
   });
 
-  const deadLetterQueue = new sst.Queue(stack, 'dlq', {
+  const dlq = new sst.Queue(stack, 'dlq', {
     cdk: {
       queue: {
         visibilityTimeout: Duration.seconds(120),
@@ -28,7 +28,7 @@ export function SQSEBPipes({ stack }: sst.StackContext) {
       queue: {
         visibilityTimeout: Duration.seconds(120),
         deadLetterQueue: {
-          queue: deadLetterQueue.cdk.queue,
+          queue: dlq.cdk.queue,
           maxReceiveCount: 3,
         },
       },
@@ -38,18 +38,12 @@ export function SQSEBPipes({ stack }: sst.StackContext) {
   getHandler.bind([mainQueue]);
 
   const fetchUser = new sfnTasks.LambdaInvoke(stack, 'fetchUserTask', {
-    lambdaFunction: new LambdaBuilder(stack, 'fetchUser')
-      .setMemory('1024 MB')
-      .setExecutionTime('20 seconds')
-      .build(),
+    lambdaFunction: new LambdaBuilder(stack, 'fetchUser').build(),
     payloadResponseOnly: true,
   });
 
   const fetchUserPosts = new sfnTasks.LambdaInvoke(stack, 'fetchPostsTask', {
-    lambdaFunction: new LambdaBuilder(stack, 'fetchUserPosts')
-      .setMemory('1024 MB')
-      .setExecutionTime('20 seconds')
-      .build(),
+    lambdaFunction: new LambdaBuilder(stack, 'fetchUserPosts').build(),
     payloadResponseOnly: true,
   });
 
@@ -59,7 +53,10 @@ export function SQSEBPipes({ stack }: sst.StackContext) {
     definition: stateMachineDefinition,
   });
 
-  const enrichmentLambda = new LambdaBuilder(stack, 'enrichmentLambda').build();
+  const enrichmentLambda = new LambdaBuilder(stack, 'enrichmentLambda')
+    .setMemory('1024 MB')
+    .setExecutionTime('20 seconds')
+    .build();
 
   const sourcePolicy = new iam.PolicyStatement({
     effect: iam.Effect.ALLOW,
@@ -71,7 +68,7 @@ export function SQSEBPipes({ stack }: sst.StackContext) {
     resources: [mainQueue.queueArn],
   });
 
-  const enrichmentPolicy = new iam.PolicyStatement({
+  const enrichmentLambdaPolicy = new iam.PolicyStatement({
     effect: iam.Effect.ALLOW,
     actions: ['lambda:InvokeFunction'],
     resources: [enrichmentLambda.functionArn],
@@ -88,7 +85,7 @@ export function SQSEBPipes({ stack }: sst.StackContext) {
   });
 
   pipeRole.addToPolicy(sourcePolicy);
-  pipeRole.addToPolicy(enrichmentPolicy);
+  pipeRole.addToPolicy(enrichmentLambdaPolicy);
   pipeRole.addToPolicy(targetPolicy);
 
   new CfnPipe(stack, 'usersPipe', {

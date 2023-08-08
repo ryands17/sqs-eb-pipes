@@ -1,9 +1,13 @@
 import { SQSEvent } from 'aws-lambda';
+import { createLogger } from '@sqs-eb-pipes/core/logger';
+import { Config } from 'sst/node/config';
+
+const logger = createLogger(Config.STAGE);
 
 export const handler = async (event: SQSEvent['Records']) => {
-  console.log(JSON.stringify(event, null, 2));
-  return event.map((record) => ({
-    messageId: record.messageId,
-    body: JSON.parse(record.body),
-  }));
+  return event.map((record) => {
+    logger.info({ message: 'record to enrich', data: record });
+
+    return { messageId: record.messageId, body: JSON.parse(record.body) };
+  });
 };

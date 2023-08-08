@@ -29,6 +29,9 @@ importers:
 
   packages/core:
     dependencies:
+      '@aws-lambda-powertools/logger':
+        specifier: ^1.12.1
+        version: 1.12.1
       zod:
         specifier: ^3.21.4
         version: 3.21.4
@@ -245,6 +248,17 @@ packages:
       '@aws-sdk/types': 3.378.0
       '@aws-sdk/util-utf8-browser': 3.259.0
       tslib: 1.14.1
+
+  /@aws-lambda-powertools/commons@1.12.1:
+    resolution: {integrity: sha512-VChNfDUxxcB5KTfQPkJgxYihEZkrmeOzU9/A9FRBc+3v33EEM59T2pIgBkFy0VoINvGi3MoBEln/wyu2jV0ivA==}
+    dev: false
+
+  /@aws-lambda-powertools/logger@1.12.1:
+    resolution: {integrity: sha512-QMBkd6/rN2MniiNcWeCigT4AKqH+NG1X6xN8S+YLszd4qJvXvRqx2EBO01WVrtyctOE8IpLqxicevmw1cJqDIA==}
+    dependencies:
+      '@aws-lambda-powertools/commons': 1.12.1
+      lodash.merge: 4.6.2
+    dev: false
 
   /@aws-sdk/client-cloudformation@3.380.0:
     resolution: {integrity: sha512-SjBfz4aqV0yjbaPdHS1Elaid/nF4EkxWSxIOZm6UcOXWIhbt9E8/A2KGFvvIZ6PqoRYQJhygbl6FWXLUqNnU+A==}
@@ -4596,6 +4610,10 @@ packages:
   /lodash.isplainobject@4.0.6:
     resolution: {integrity: sha512-oSXzaWypCMHkPC3NvBEaPHf0KsA5mvPrOPgQWDsbg8n7orZ290M0BmC/jgRZ4vcJ6DTAhjrsSYgdsW/F+MFOBA==}
     dev: true
+
+  /lodash.merge@4.6.2:
+    resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
+    dev: false
 
   /lodash.pad@4.5.1:
     resolution: {integrity: sha512-mvUHifnLqM+03YNzeTBS1/Gr6JRFjd3rRx88FHWUvamVaT9k2O/kXha3yBSOwB9/DTQrSTLJNHvLBBt2FdX7Mg==}

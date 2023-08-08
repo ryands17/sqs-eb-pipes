@@ -16,7 +16,10 @@ export default {
       timeout: '1 minute',
       memorySize: '512 MB',
       architecture: 'arm_64',
-      environment: { NODE_OPTIONS: '--enable-source-maps' },
+      environment: {
+        NODE_OPTIONS: '--enable-source-maps',
+        POWERTOOLS_DEV: ['dev', 'test'].includes(app.stage) ? 'true' : 'false',
+      },
       nodejs: { esbuild: { sourcemap: true } },
     });
 

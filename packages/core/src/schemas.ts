@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+export type AppStage = 'dev' | 'test' | 'prod' | (string & {});
+
 export const userEventSchema = z.array(
   z.object({
     messageId: z.string(),
